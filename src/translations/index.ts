@@ -50,6 +50,7 @@ export const translations = {
     importCSV: "Importer CSV",
     addContact: "Ajouter un contact",
     editContact: "Modifier le contact",
+    exportSelected: "Exporter la sélection",
   },
   en: {
     // Common
@@ -100,5 +101,6 @@ export const translations = {
     importCSV: "Import CSV",
     addContact: "Add Contact",
     editContact: "Edit Contact",
+    exportSelected: "Export Selected",
   },
 } as const;
