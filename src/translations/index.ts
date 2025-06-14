@@ -32,6 +32,7 @@ export const translations = {
     countryRequired: "Le pays est requis",
 
     // Modal messages
+    deleteContact: "Supprimer le contact",
     deleteConfirmation: "Confirmer la suppression",
     deleteConfirmationMessage:
       "Êtes-vous sûr de vouloir supprimer ce contact ? Cette action est irréversible.",
@@ -81,6 +82,7 @@ export const translations = {
     countryRequired: "Country is required",
 
     // Modal messages
+    deleteContact: "Delete Contact",
     deleteConfirmation: "Confirm Deletion",
     deleteConfirmationMessage:
       "Are you sure you want to delete this contact? This action cannot be undone.",

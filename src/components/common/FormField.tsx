@@ -24,11 +24,15 @@ export function FormField({ field, value, error, onChange }: FormFieldProps) {
 
   return (
     <div className={field.fullWidth ? "" : "md:col-span-1"}>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
+      <label
+        htmlFor={field.name}
+        className="block text-sm font-medium text-gray-700 mb-1"
+      >
         {t(field.label)}
       </label>
       {field.type === "select" ? (
         <select
+          id={field.name}
           name={field.name}
           value={value}
           onChange={onChange}
@@ -42,6 +46,7 @@ export function FormField({ field, value, error, onChange }: FormFieldProps) {
         </select>
       ) : (
         <input
+          id={field.name}
           type={field.type}
           name={field.name}
           value={value}
@@ -49,7 +54,7 @@ export function FormField({ field, value, error, onChange }: FormFieldProps) {
           className={commonClasses}
         />
       )}
-      {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+      {error && <p className="text-red-500 text-sm mt-1">{t(error)}</p>}
     </div>
   );
 }

@@ -83,6 +83,14 @@ export const ContactList = ({
   };
 
   /**
+   * Handles the cancellation of contact deletion
+   */
+  const handleCancelDelete = () => {
+    setDeleteModalOpen(false);
+    setContactToDelete(null);
+  };
+
+  /**
    * Handles the sorting of contacts
    * @param {string} field - The field to sort by
    */
@@ -204,115 +212,109 @@ export const ContactList = ({
   };
 
   return (
-    <>
-      <div className="mb-4 flex justify-end">
-        <button
-          onClick={handleExportSelected}
-          disabled={selectedContacts.size === 0}
-          className={`inline-flex items-center px-3 py-2 bg-white border border-[#213547] text-[#213547] rounded-md hover:bg-gray-50 mr-2 sm:mr-0 text-sm sm:text-base ${
-            selectedContacts.size === 0 ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-        >
-          <ArrowUpTrayIcon className="h-4 w-4 mr-2" /> ({selectedContacts.size})
-        </button>
+    <div className="overflow-x-auto">
+      <div className="flex justify-end mb-4">
+        {selectedContacts.size > 0 && (
+          <button
+            onClick={handleExportSelected}
+            className="flex items-center px-4 py-2 bg-[#213547] text-white rounded-md hover:bg-[#213547]/90"
+          >
+            <ArrowUpTrayIcon className="h-5 w-5 mr-2" />
+            {t("exportSelected")}
+          </button>
+        )}
       </div>
-
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <input
+                type="checkbox"
+                checked={selectedContacts.size === sortedContacts.length}
+                onChange={handleSelectAll}
+                className="h-4 w-4 text-[#213547] border-gray-300 rounded focus:ring-[#213547]"
+              />
+            </th>
+            {TABLE_HEADERS.map((header) => (
+              <th
+                key={header.key}
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort(header.key)}
+              >
+                <div className="inline-flex items-center">
+                  {t(header.label)}
+                  {renderSortIcon(header.key)}
+                </div>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {sortedContacts.map((contact) => (
+            <tr key={contact.id}>
+              <td className="px-6 py-4 whitespace-nowrap">
                 <input
                   type="checkbox"
-                  checked={selectedContacts.size === sortedContacts.length}
-                  onChange={handleSelectAll}
+                  checked={selectedContacts.has(contact.id)}
+                  onChange={() => handleSelectContact(contact.id)}
                   className="h-4 w-4 text-[#213547] border-gray-300 rounded focus:ring-[#213547]"
                 />
-              </th>
-              {TABLE_HEADERS.map((header) => (
-                <th
-                  key={header.key}
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleSort(header.key)}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                {t(contact.civility)}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                {contact.lastName}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                {contact.firstName}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <a
+                  href={`mailto:${contact.email}`}
+                  className="inline-flex items-center text-[#213547] hover:text-[#213547]/80"
                 >
-                  <div className="inline-flex items-center">
-                    {t(header.label)}
-                    {renderSortIcon(header.key)}
-                  </div>
-                </th>
-              ))}
+                  <EnvelopeIcon className="h-4 w-4 mr-1" />
+                  {contact.email}
+                </a>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <a
+                  href={`tel:${contact.phone}`}
+                  className="inline-flex items-center text-[#213547] hover:text-[#213547]/80"
+                >
+                  <PhoneIcon className="h-4 w-4 mr-1" />
+                  {contact.phone}
+                </a>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">{contact.country}</td>
+              <td className="py-4 whitespace-nowrap text-right text-sm font-medium">
+                <button
+                  onClick={() => onEdit(contact)}
+                  className="inline-flex items-center px-3 py-1 bg-white border border-[#213547] text-[#213547] rounded-md hover:bg-gray-50 mr-4"
+                >
+                  <PencilIcon className="h-4 w-4 mr-1" />
+                  {t("edit")}
+                </button>
+                <button
+                  onClick={() => handleDeleteClick(contact)}
+                  className="inline-flex items-center px-3 py-1 bg-white border border-[#213547] text-[#213547] rounded-md hover:bg-gray-50"
+                >
+                  <TrashIcon className="h-4 w-4 mr-1" />
+                  {t("delete")}
+                </button>
+              </td>
             </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {sortedContacts.map((contact) => (
-              <tr key={contact.id}>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <input
-                    type="checkbox"
-                    checked={selectedContacts.has(contact.id)}
-                    onChange={() => handleSelectContact(contact.id)}
-                    className="h-4 w-4 text-[#213547] border-gray-300 rounded focus:ring-[#213547]"
-                  />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {t(contact.civility)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {contact.lastName}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {contact.firstName}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <a
-                    href={`mailto:${contact.email}`}
-                    className="inline-flex items-center text-[#213547] hover:text-[#213547]/80"
-                  >
-                    <EnvelopeIcon className="h-4 w-4 mr-1" />
-                    {contact.email}
-                  </a>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <a
-                    href={`tel:${contact.phone}`}
-                    className="inline-flex items-center text-[#213547] hover:text-[#213547]/80"
-                  >
-                    <PhoneIcon className="h-4 w-4 mr-1" />
-                    {contact.phone}
-                  </a>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {contact.country}
-                </td>
-                <td className="py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <button
-                    onClick={() => onEdit(contact)}
-                    className="inline-flex items-center px-3 py-1 bg-white border border-[#213547] text-[#213547] rounded-md hover:bg-gray-50 mr-4"
-                  >
-                    <PencilIcon className="h-4 w-4 mr-1" />
-                    {t("edit")}
-                  </button>
-                  <button
-                    onClick={() => handleDeleteClick(contact)}
-                    className="inline-flex items-center px-3 py-1 bg-white border border-[#213547] text-[#213547] rounded-md hover:bg-gray-50"
-                  >
-                    <TrashIcon className="h-4 w-4 mr-1" />
-                    {t("delete")}
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
+          ))}
+        </tbody>
+      </table>
       <Modal
         isOpen={deleteModalOpen}
-        onClose={() => setDeleteModalOpen(false)}
+        onClose={handleCancelDelete}
         onConfirm={handleConfirmDelete}
-        title={t("deleteConfirmation")}
-        message={t("deleteConfirmationMessage")}
+        title={t("deleteContact")}
+        message={t("deleteConfirmation")}
       />
-    </>
+    </div>
   );
 };
