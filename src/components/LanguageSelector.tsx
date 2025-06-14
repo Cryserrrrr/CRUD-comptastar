@@ -8,6 +8,10 @@ import { useLanguage } from "../context/LanguageContext";
 export function LanguageSelector() {
   const { language, setLanguage } = useLanguage();
 
+  /**
+   * Handles the language change
+   * @param {React.ChangeEvent<HTMLSelectElement>} e - The change event
+   */
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setLanguage(e.target.value as "fr" | "en");
   };

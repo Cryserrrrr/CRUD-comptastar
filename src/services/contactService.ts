@@ -2,6 +2,11 @@ import type { Contact, ContactFormData } from "../types";
 
 const STORAGE_KEY = "contacts";
 
+/**
+ * Converts a civility to a standard format
+ * @param {string} civility - The civility to convert
+ * @returns {string} The converted civility
+ */
 const convertCivility = (civility: string): "mr" | "mrs" | "miss" => {
   const civilityMap: Record<string, "mr" | "mrs" | "miss"> = {
     monsieur: "mr",
@@ -14,6 +19,11 @@ const convertCivility = (civility: string): "mr" | "mrs" | "miss" => {
   return civilityMap[civility.toLowerCase()] || "mr";
 };
 
+/**
+ * Validates the data of a CSV line
+ * @param {string[]} values - The values of the CSV line
+ * @returns {boolean} True if the data is valid, false otherwise
+ */
 const validateCSVData = (values: string[]): boolean => {
   if (values.length !== 6) return false;
 
@@ -45,12 +55,25 @@ const validateCSVData = (values: string[]): boolean => {
   return true;
 };
 
+/**
+ * The contact service
+ * @namespace contactService
+ */
 export const contactService = {
+  /**
+   * Gets all contacts
+   * @returns {Contact[]} The contacts
+   */
   getAll: (): Contact[] => {
     const contacts = localStorage.getItem(STORAGE_KEY);
     return contacts ? JSON.parse(contacts) : [];
   },
 
+  /**
+   * Creates a new contact
+   * @param {ContactFormData} contact - The contact data to create
+   * @returns {Contact} The created contact
+   */
   create: (contact: ContactFormData): Contact => {
     const contacts = contactService.getAll();
     const newContact: Contact = {
@@ -62,6 +85,12 @@ export const contactService = {
     return newContact;
   },
 
+  /**
+   * Updates a contact
+   * @param {string} id - The ID of the contact to update
+   * @param {ContactFormData} contact - The contact data to update
+   * @returns {Contact} The updated contact
+   */
   update: (id: string, contact: ContactFormData): Contact => {
     const contacts = contactService.getAll();
     const index = contacts.findIndex((c) => c.id === id);
@@ -73,12 +102,21 @@ export const contactService = {
     return updatedContact;
   },
 
+  /**
+   * Deletes a contact
+   * @param {string} id - The ID of the contact to delete
+   */
   delete: (id: string): void => {
     const contacts = contactService.getAll();
     const filteredContacts = contacts.filter((c) => c.id !== id);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(filteredContacts));
   },
 
+  /**
+   * Imports contacts from a CSV file
+   * @param {string} csvContent - The CSV content
+   * @returns {Contact[]} The imported contacts
+   */
   importFromCSV: (csvContent: string): Contact[] => {
     const lines = csvContent.split("\n");
     const headers = lines[0].split(",");
@@ -117,6 +155,11 @@ export const contactService = {
     return contacts;
   },
 
+  /**
+   * Exports the contacts to a CSV file
+   * @param {Contact[]} contacts - The contacts to export
+   * @returns {string} The CSV content
+   */
   exportToCSV: (contacts: Contact[]): string => {
     const headers = ["civilité", "prénom", "nom", "email", "téléphone", "pays"];
     const rows = contacts.map((contact) => [

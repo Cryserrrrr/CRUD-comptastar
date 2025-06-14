@@ -9,37 +9,62 @@ import { contactService } from "./services/contactService";
 import type { Contact, ContactFormData } from "./types";
 import { PlusIcon, ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 
+/**
+ * The main app content
+ * @returns {JSX.Element} The app content
+ */
 function AppContent() {
   const { t } = useLanguage();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [selectedContact, setSelectedContact] = useState<Contact | undefined>();
   const [isFormVisible, setIsFormVisible] = useState(false);
 
+  /**
+   * Loads the contacts from the service
+   */
   useEffect(() => {
     loadContacts();
   }, []);
 
+  /**
+   * Loads the contacts from the service
+   */
   const loadContacts = () => {
     const loadedContacts = contactService.getAll();
     setContacts(loadedContacts);
   };
 
+  /**
+   * Handles the addition of a contact
+   */
   const handleAddContact = () => {
     setSelectedContact(undefined);
     setIsFormVisible(true);
   };
 
+  /**
+   * Handles the editing of a contact
+   * @param {Contact} contact - The contact to edit
+   */
   const handleEditContact = (contact: Contact) => {
     setSelectedContact(contact);
     setIsFormVisible(true);
   };
 
+  /**
+   * Handles the deletion of a contact
+   * @param {string} id - The ID of the contact to delete
+   */
   const handleDeleteContact = (id: string) => {
     contactService.delete(id);
     loadContacts();
     toast.success(t("contactDeleted"));
   };
 
+  /**
+   * Handles the submission of a contact form
+   * @param {ContactFormData} data - The contact data to submit
+   */
   const handleSubmit = (data: ContactFormData) => {
     try {
       if (selectedContact) {
@@ -56,6 +81,10 @@ function AppContent() {
     }
   };
 
+  /**
+   * Handles the import of a CSV file
+   * @param {React.ChangeEvent<HTMLInputElement>} event - The change event
+   */
   const handleImportCSV = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {

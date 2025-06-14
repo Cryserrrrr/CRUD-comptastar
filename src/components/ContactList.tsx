@@ -151,6 +151,10 @@ export const ContactList = ({
     );
   };
 
+  /**
+   * Handles the selection of a contact
+   * @param {string} contactId - The ID of the contact to select
+   */
   const handleSelectContact = (contactId: string) => {
     setSelectedContacts((prev) => {
       const newSet = new Set(prev);
@@ -163,6 +167,9 @@ export const ContactList = ({
     });
   };
 
+  /**
+   * Handles the selection of all contacts
+   */
   const handleSelectAll = () => {
     if (selectedContacts.size === sortedContacts.length) {
       setSelectedContacts(new Set());
@@ -171,6 +178,9 @@ export const ContactList = ({
     }
   };
 
+  /**
+   * Handles the export of selected contacts
+   */
   const handleExportSelected = () => {
     const contactsToExport = sortedContacts.filter((contact) =>
       selectedContacts.has(contact.id)
